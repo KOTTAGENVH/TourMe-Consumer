@@ -19,7 +19,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { ToastContainer, toast } from "react-toastify";
 import Chip from "@mui/material/Chip";
-import dayjs from "dayjs"; // Import dayjs for date handling
+import dayjs from "dayjs"; 
 
 function ViewSouvenierOrder() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -32,7 +32,7 @@ function ViewSouvenierOrder() {
   const darkmode = useSelector((state) => state.darkmode.darkmode);
   const queryClient = useQueryClient();
 
-  // Add a query key for invalidation
+
   const { data } = useQuery({
     queryKey: ["souvenierOrders", loggedUser?.email],
     queryFn: () => getSouvenierOrdersByUseremail(loggedUser?.email),
@@ -181,7 +181,6 @@ function ViewSouvenierOrder() {
       updateSouvenierOrder(id, "cancelled").then((res) => {
         toast.success("Order Cancelled Successfully");
         setOpenDialog(false);
-        // Invalidate the query to refetch the updated orders without reloading the page
         queryClient.invalidateQueries(["souvenierOrders", loggedUser?.email]);
       });
     } catch (error) {

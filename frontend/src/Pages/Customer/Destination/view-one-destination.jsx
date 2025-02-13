@@ -16,7 +16,6 @@ import Modal from "@mui/material/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import StarIcon from "@mui/icons-material/Star";
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -120,7 +119,6 @@ function Viewonedestination() {
     try {
       await updatedestinationRating(storedid, rating).then((response) => {
         toast.success("Rating updated successfully");
-        // Invalidate the query to refetch updated data without a full page reload
         queryClient.invalidateQueries(["destination", storedid]);
       });
     } catch (error) {
@@ -371,8 +369,8 @@ function Viewonedestination() {
           >
             <Box
               sx={{
-                width: "90%", // Adjust the width as a percentage of the viewport width
-                height: "90%", // Adjust the height as a percentage of the viewport height
+                width: "90%", 
+                height: "90%", 
                 borderRadius: "20px",
                 position: "relative",
                 bgcolor: "background.paper",

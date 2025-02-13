@@ -91,19 +91,18 @@ function Viewonesouvenier() {
     useEffect(() => {
       const button = buttonRef.current;
       const adjustTextSize = () => {
-        if (!button) return; // Check if button exists
+        if (!button) return; 
         const maxWidth = button.offsetWidth;
-        let fontSize = 20; // Initial font size
+        let fontSize = 20;
         const text = button.querySelector("span");
-        if (!text) return; // Check if text element exists
+        if (!text) return; 
         const originalText = text.innerText;
         text.style.fontSize = fontSize + "px";
         while (text.offsetWidth > maxWidth) {
           fontSize -= 1;
           text.style.fontSize = fontSize + "px";
-          if (fontSize <= 8) break; // To avoid infinite loop
+          if (fontSize <= 8) break; 
         }
-        // Restoring original text if it was truncated
         if (text.offsetWidth < maxWidth) {
           text.innerText = originalText;
         }
@@ -191,14 +190,6 @@ function Viewonesouvenier() {
               <img src={data?.image1} alt="Souvenier 2" />
             </SwiperSlide>
             <SwiperSlide className="swiper-slide-simg3">
-              {/* <video
-      controls
-      alt="video"
-      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-    >
-      <source src={data?.video} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video> */}
               <Iframe
                 url={data?.video}
                 width="100%"
@@ -378,8 +369,8 @@ function Viewonesouvenier() {
           >
             <Box
               sx={{
-                width: "90%", // Adjust the width as a percentage of the viewport width
-                height: "90%", // Adjust the height as a percentage of the viewport height
+                width: "90%",
+                height: "90%", 
                 borderRadius: "20px",
                 position: "relative",
                 bgcolor: "background.paper",
