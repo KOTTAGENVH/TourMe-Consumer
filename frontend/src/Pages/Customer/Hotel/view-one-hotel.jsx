@@ -21,7 +21,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import "../../../CSS/souvenierone.css";
 import { useNavigate } from "react-router-dom";
 import {
@@ -54,10 +54,12 @@ function Viewonehotel() {
   const navigate = useNavigate();
   const storedid = useSelector((state) => state.id.id);
   const darkmode = useSelector((state) => state.darkmode.darkmode);
+  const queryClient = useQueryClient();
+
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prevProgress) =>
         prevProgress >= 100 ? 0 : prevProgress + 10
@@ -70,16 +72,11 @@ function Viewonehotel() {
   }, []);
 
   const { data, isLoading, isError } = useQuery({
+    queryKey: ["hotel", storedid],
     queryFn: () => getHotelById(storedid),
   });
 
-  const handleDarkmode = () => {
-    if (darkmode) {
-      return "white";
-    } else {
-      return "black";
-    }
-  };
+  const handleDarkmode = () => (darkmode ? "white" : "black");
 
   const DynamicTextButton = ({ children, ...props }) => {
     const buttonRef = useRef(null);
@@ -87,19 +84,18 @@ function Viewonehotel() {
     useEffect(() => {
       const button = buttonRef.current;
       const adjustTextSize = () => {
-        if (!button) return; // Check if button exists
+        if (!button) return;
         const maxWidth = button.offsetWidth;
-        var fontSize = 20; // Initial font size
+        let fontSize = 20;
         const text = button.querySelector("span");
-        if (!text) return; // Check if text element exists
+        if (!text) return; 
         const originalText = text.innerText;
         text.style.fontSize = fontSize + "px";
         while (text.offsetWidth > maxWidth) {
           fontSize -= 1;
           text.style.fontSize = fontSize + "px";
-          if (fontSize <= 8) break; // To avoid infinite loop
+          if (fontSize <= 8) break; 
         }
-        // Restoring original text if it was truncated
         if (text.offsetWidth < maxWidth) {
           text.innerText = originalText;
         }
@@ -122,7 +118,7 @@ function Viewonehotel() {
     try {
       await updatehotelRating(storedid, rating).then((response) => {
         toast.success("Rating updated successfully");
-        window.location.reload();
+        queryClient.invalidateQueries(["hotel", storedid]);
       });
     } catch (error) {
       toast.error("Rating update failed");
@@ -296,7 +292,6 @@ function Viewonehotel() {
                   justifyContent: "center",
                   alignItems: "center",
                   margin: "20px",
-                  // color: handleDarkmode(),
                 }}
                 emptyIcon={
                   <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
@@ -384,8 +379,8 @@ function Viewonehotel() {
           >
             <Box
               sx={{
-                width: "90%", // Adjust the width as a percentage of the viewport width
-                height: "90%", // Adjust the height as a percentage of the viewport height
+                width: "90%", 
+                height: "90%", 
                 borderRadius: "20px",
                 position: "relative",
                 bgcolor: "background.paper",
