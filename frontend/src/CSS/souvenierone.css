@@ -1,0 +1,23 @@
+
+  .mySwiper .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mySwiper .swiper-slide video,
+  
+  .swiper-slide-simg1 {
+    background-size: cover;
+    background-position: center;
+  }
+
+    .swiper-slide-simg2 {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .swiper-slide-simg3 {
+        background-size: contain;
+        background-position: center;
+    }
