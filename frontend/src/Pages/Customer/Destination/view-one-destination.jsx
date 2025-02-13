@@ -122,7 +122,7 @@ function Viewonedestination() {
     try {
       await updatedestinationRating(storedid, rating).then((response) => {
         toast.success("Rating updated successfully");
-        window.location.reload();
+        queryClient.invalidateQueries(["destination", storedid]);
       });
     } catch (error) {
       toast.error("Rating update failed");

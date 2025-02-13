@@ -125,7 +125,7 @@ function Viewonesouvenier() {
     try {
       await updateSouvenierRating(storedid, rating).then((response) => {
         toast.success("Rating updated successfully");
-        window.location.reload();
+        queryClient.invalidateQueries(["souvenier", storedid]);
       });
     } catch (error) {
       toast.error("Rating update failed");

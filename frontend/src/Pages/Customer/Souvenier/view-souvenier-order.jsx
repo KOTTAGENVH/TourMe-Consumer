@@ -175,7 +175,7 @@ function ViewSouvenierOrder() {
       updateSouvenierOrder(id, "cancelled").then((res) => {
         toast.success("Order Cancelled Successfully");
         setOpenDialog(false);
-        window.location.reload();
+        queryClient.invalidateQueries(["souvenierOrders", loggedUser?.email]);
       });
     } catch (error) {
       toast.error("Error in Cancelling Order");
