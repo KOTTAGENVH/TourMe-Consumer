@@ -21,7 +21,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import "../../../CSS/souvenierone.css";
 import { useNavigate } from "react-router-dom";
 import {
@@ -54,10 +54,12 @@ function Viewonedestination() {
   const navigate = useNavigate();
   const storedid = useSelector((state) => state.id.id);
   const darkmode = useSelector((state) => state.darkmode.darkmode);
+  const queryClient = useQueryClient();
+
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prevProgress) =>
         prevProgress >= 100 ? 0 : prevProgress + 10
@@ -69,17 +71,13 @@ function Viewonedestination() {
     };
   }, []);
 
+  // Add a query key so that invalidation works correctly
   const { data, isLoading, isError } = useQuery({
+    queryKey: ["destination", storedid],
     queryFn: () => getDestinationById(storedid),
   });
 
-  const handleDarkmode = () => {
-    if (darkmode) {
-      return "white";
-    } else {
-      return "black";
-    }
-  };
+  const handleDarkmode = () => (darkmode ? "white" : "black");
 
   const DynamicTextButton = ({ children, ...props }) => {
     const buttonRef = useRef(null);
@@ -89,7 +87,7 @@ function Viewonedestination() {
       const adjustTextSize = () => {
         if (!button) return; // Check if button exists
         const maxWidth = button.offsetWidth;
-        var fontSize = 20; // Initial font size
+        let fontSize = 20; // Initial font size
         const text = button.querySelector("span");
         if (!text) return; // Check if text element exists
         const originalText = text.innerText;
@@ -122,6 +120,7 @@ function Viewonedestination() {
     try {
       await updatedestinationRating(storedid, rating).then((response) => {
         toast.success("Rating updated successfully");
+        // Invalidate the query to refetch updated data without a full page reload
         queryClient.invalidateQueries(["destination", storedid]);
       });
     } catch (error) {
@@ -285,7 +284,6 @@ function Viewonedestination() {
                   justifyContent: "center",
                   alignItems: "center",
                   margin: "20px",
-                  // color: handleDarkmode(),
                 }}
                 emptyIcon={
                   <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />

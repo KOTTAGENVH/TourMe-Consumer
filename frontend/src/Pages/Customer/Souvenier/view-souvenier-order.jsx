@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -7,7 +7,10 @@ import Button from "@mui/material/Button";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { getSouvenierOrdersByUseremail, updateSouvenierOrder } from "../../../Api/services/souvenierService";
+import {
+  getSouvenierOrdersByUseremail,
+  updateSouvenierOrder,
+} from "../../../Api/services/souvenierService";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setidAction } from "../../../Redux/idcapture/idcaptureAction";
@@ -15,7 +18,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import { ToastContainer, toast } from "react-toastify";
-import Chip from '@mui/material/Chip';
+import Chip from "@mui/material/Chip";
 import dayjs from "dayjs"; // Import dayjs for date handling
 
 function ViewSouvenierOrder() {
@@ -27,8 +30,11 @@ function ViewSouvenierOrder() {
   const navigate = useNavigate();
   const loggedUser = useSelector((state) => state.auth.loggedUser);
   const darkmode = useSelector((state) => state.darkmode.darkmode);
+  const queryClient = useQueryClient();
 
+  // Add a query key for invalidation
   const { data } = useQuery({
+    queryKey: ["souvenierOrders", loggedUser?.email],
     queryFn: () => getSouvenierOrdersByUseremail(loggedUser?.email),
   });
 
@@ -157,7 +163,7 @@ function ViewSouvenierOrder() {
               >
                 Cancel
               </Button>
-            ): null}
+            ) : null}
           </div>
         ),
       },
@@ -175,6 +181,7 @@ function ViewSouvenierOrder() {
       updateSouvenierOrder(id, "cancelled").then((res) => {
         toast.success("Order Cancelled Successfully");
         setOpenDialog(false);
+        // Invalidate the query to refetch the updated orders without reloading the page
         queryClient.invalidateQueries(["souvenierOrders", loggedUser?.email]);
       });
     } catch (error) {
@@ -216,7 +223,7 @@ function ViewSouvenierOrder() {
           }}
         />
       </LocalizationProvider>
-      <MaterialReactTable table={table} />;
+      <MaterialReactTable table={table} />
       <Dialog
         open={opendialog}
         onClose={handleClose}
