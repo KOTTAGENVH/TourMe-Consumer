@@ -20,17 +20,13 @@ import Hotelorder from "./Pages/Customer/Hotel/hotel-order";
 import DestinationOrder from "./Pages/Customer/Destination/destination-order";
 import Profile from "./Pages/Customer/profile";
 import Viewallorder from "./Pages/Customer/view-all-orders";
+
 function App() {
   const loggedUser = useSelector((state) => state.auth.loggedUser);
   const darkmode = useSelector((state) => state.darkmode.darkmode);
 
-  const handleCss = () => {
-    if (darkmode) {
-      return "AppDarkmode";
-    } else {
-      return "App";
-    }
-  };
+  const handleCss = () => (darkmode ? "AppDarkmode" : "App");
+
   return (
     <div className={handleCss()}>
       <BrowserRouter>
@@ -38,7 +34,8 @@ function App() {
           <Route path="/" element={<SignIn />} />
           <Route path="/forgot" element={<ForgetPassword />} />
           <Route path="/signup" element={<SignUp />} />
-          {loggedUser.role === "customer" && (
+          
+          {loggedUser?.role === "customer" && (
             <>
               <Route path="/home" element={<Home />} />
               <Route path="/about-Sri-Lanka" element={<AboutSriLanka />} />
@@ -47,10 +44,7 @@ function App() {
               <Route path="/souveniers" element={<Souvenier />} />
               <Route path="/airports" element={<Airports />} />
               <Route path="/profile" element={<Profile />} />
-              <Route
-                path="/viewone/destination"
-                element={<Viewonedestination />}
-              />
+              <Route path="/viewone/destination" element={<Viewonedestination />} />
               <Route path="/viewone/hotel" element={<Viewonehotel />} />
               <Route path="/viewone/souvenier" element={<Viewonesouvenier />} />
               <Route path="/souvenierorder" element={<Souvenierorder />} />
